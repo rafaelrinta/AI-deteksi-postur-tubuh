@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posture Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Posture Detection</h1>
+    </header>
+    <main>
+        <div class="video-container">
+            <div id="loading" class="loading"></div>
+            <img src="{{ url_for('video_feed') }}" id="videoFeed" width="640" height="480" onload="hideLoading()">
+        </div>
+        <div class="info">
+            <h2>Posture Info</h2>
+            <p><strong>Class:</strong> <span id="detectedClass">-</span></p>
+            <p><strong>Probability:</strong> <span id="detectedProbability">-</span></p>
+        </div>
+    </main>
+    <footer>
+        <p>Developed by Rafael Rinta</p>
+    </footer>
+    <script>
+        const videoFeed = document.getElementById('videoFeed');
+        const detectedClass = document.getElementById('detectedClass');
+        const detectedProbability = document.getElementById('detectedProbability');
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        setInterval(() => {
+            fetch('/detection_info')
+                .then(response => response.json())
+                .then(data => {
+                    detectedClass.innerText = data.class;
+                    detectedProbability.innerText = data.probability;
+                });
+        }, 1000); // Update every second
+    </script>
+</body>
+</html>
